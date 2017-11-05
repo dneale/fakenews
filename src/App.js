@@ -6,12 +6,20 @@ import styled from 'styled-components';
 import './App.css';
 
 const GameHeader = styled.div`
-  padding: 2em 0;
-  color: white;
-  background-color: #222;
+  padding: 2em 0 0 0;
   text-align:center;
-  border-bottom: solid 1em papayawhip;
-  margin-bottom: 1em;
+  h1 {
+    font-size: 3em;
+    font-family: 'Francois One', sans-serif;  
+  }
+  p {
+    font-family: 'Francois One', sans-serif;  
+  }
+  hr {
+    border: solid 2px #CCC;
+    max-width: 700px;
+  }
+  margin: 1em;
 `;
 
 
@@ -189,8 +197,8 @@ class App extends Component {
     return (
       <div>
         <GameHeader>
-          <h1> Convergence with a Computer </h1>
-          <p> Made by Doug</p>
+          <h1> Convergence with a Computer&nbsp;<span role="img" aria-label="robot face">🤖</span></h1>
+          <hr />
         </GameHeader>
         <Grid padded className={this.props.className}>
           <Grid.Row centered>
