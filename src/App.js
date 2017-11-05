@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import faker from 'faker';
-import { Header, Input, Form, Grid, Button } from 'semantic-ui-react';
+import { Input, Form, Grid, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 
-import logo from './logo.svg';
 import './App.css';
 
 const GameHeader = styled.div`
