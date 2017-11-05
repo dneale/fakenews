@@ -1,0 +1,53 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:7.10
+    working_directory: ~/repo/react-ui
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn test
+      - run: yarn run build
+      - persist_to_workspace:
+          root: ~/repo/react-ui
+          paths: 
+            - build
+  deploy:
+    docker:
+      - image: circleci/python:2.7
+    working_directory: ~/repo/react-ui
+    steps:
+      - attach_workspace:
+          at: ~/repo/react-ui
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy to S3 if tests pass and branch is Master
+          command: aws s3 sync build s3://convergence.dougneale.com/ --delete
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - hold:
+         type: approval
+         requires:
+           - build
+      - deploy:
+          requires:
+            - hold
+          filters:
+            branches:
+              only: master
