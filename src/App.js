@@ -13,13 +13,28 @@ const GameHeader = styled.div`
     font-family: 'Francois One', sans-serif;  
   }
   p {
-    font-family: 'Francois One', sans-serif;  
+    position: relative;   
+    text-align: center;
+    span {
+      background-color: white;
+      z-index: 99;
+      position: relative;
+      top: -12px;  
+      padding: 0 1em; 
+      margin-right: 1em;   
+    }
+    hr {
+      border: solid 2px #CCC;
+      max-width: 700px;
+      margin-top: 0;
+      margin-bottom: 0;
+      padding: 0;
+      
+    }
   }
-  hr {
-    border: solid 2px #CCC;
-    max-width: 700px;
-  }
+  
   margin: 1em;
+  margin-bottom: 0;
 `;
 
 
@@ -49,7 +64,7 @@ class App extends Component {
   }
 
   pickRandom = () => {
-    const random = faker.random.word();
+    const random = faker.random.word().split(' ')[0].toLowerCase();
     this.setState({
       currentAnswer: {
         ...this.state.currentAnswer,
@@ -61,6 +76,7 @@ class App extends Component {
 
   submitWord = (event) => {
     event.preventDefault();
+    this.nameInput.focus();
     this.updateGame(this.state.currentAnswer.you);
   };
 
@@ -152,7 +168,7 @@ class App extends Component {
       <p> Convergence (aka Mind Meld) is a word association game. You are given two words and you respond by submitting a word that relates to both of them. For example...</p>
       <p style={{textAlign:'center'}}> <b>King</b> and <b>Son</b> becomes <b>Prince</b> </p>
       <p style={{textAlign:'center'}}> <b>Amphitheatre</b> and <b>Rome</b> becomes <b>Colosseum</b> </p>
-      <p> You will be playing against a computer who will also submit a word. Then you associate again off those words. This is repeated until you both say the same word and CONVERGENCE is achieved. </p>
+      <p> You will be playing against a computer who will also submit a word. Then you associate again off those words. This is repeated until you both say the same word and <span role="img" aria-label="yay">🎉</span>  CONVERGENCE is achieved. </p>
       <p> To begin, first enter a word, or <a onClick={this.pickRandom}> choose a random one</a></p>
     </p>
   );
@@ -160,7 +176,9 @@ class App extends Component {
   wordForm = () => (
     <Form size="big" autoComplete="off">
       <Form.Field>
-        <Input action={
+        <Input 
+        ref={(input) => { this.nameInput = input; }}
+        action={
           <Button disabled={!this.state.currentAnswer.computer || !this.state.currentAnswer.you} type="submit"
                                onClick={this.submitWord}>
           Submit word
@@ -172,9 +190,10 @@ class App extends Component {
   );
 
   endGameState = () => (
-    <div>
-      <h1 style={{color: 'green'}}> CONVERGENCE!</h1>
-      <button onClick={this.resetState}> Reset game</button>
+    <div className="endgame">
+      <h1 style={{color: 'green'}}><span role="img" aria-label="yay">🎉</span>&nbsp;CONVERGENCE!</h1>
+      <p> It took you {this.state.counter} attempts </p>                    
+      <Button className="reset" onClick={this.resetState}> Reset game</Button>      
     </div>
   );
 
@@ -188,7 +207,9 @@ class App extends Component {
       }
       <p>You said <h2>{this.state.prevAnswer.you}</h2></p>
       <p>The computer said<h2>{this.state.prevAnswer.computer}</h2></p>
-      <p> Now think of a word that relates to both <b>{this.state.prevAnswer.you}</b> and <b>{this.state.prevAnswer.computer}</b></p>
+      {!this.state.convergence &&
+        <p> Now think of a word that relates to both <b>{this.state.prevAnswer.you}</b> and <b>{this.state.prevAnswer.computer}</b></p>
+      }
     </p>
   );
 
@@ -198,7 +219,12 @@ class App extends Component {
       <div>
         <GameHeader>
           <h1> Convergence with a Computer&nbsp;<span role="img" aria-label="robot face">🤖</span></h1>
-          <hr />
+          <p> 
+            <hr />
+            <span>
+            By <a href="http://dougneale.com">Doug</a>              
+            </span>          
+          </p>
         </GameHeader>
         <Grid padded className={this.props.className}>
           <Grid.Row centered>
@@ -214,11 +240,12 @@ class App extends Component {
           <Grid.Row centered>
             <Grid.Column mobile={16} tablet={8} computer={4} largeScreen={4}>
 
-              {this.wordForm()}
+              {!this.state.convergence && 
+                this.wordForm()
+              }
               {this.state.convergence &&
                 this.endGameState()
               }
-              counter: {this.state.counter}
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -229,4 +256,10 @@ class App extends Component {
 
 export default styled(App)`
   font-size: 18px;
+  .reset {
+    padding: 1em;
+  }
+  .endgame {
+    text-align: center;
+  }
 `;
