@@ -77,7 +77,7 @@ class App extends Component {
   submitWord = (event) => {
     event.preventDefault();
     this.nameInput.focus();
-    this.updateGame(this.state.currentAnswer.you);
+    this.updateGame(this.state.currentAnswer.you.trim());
   };
 
   updateGame(word) {
@@ -85,6 +85,12 @@ class App extends Component {
     const currentAnswer = {
       computer: this.state.currentAnswer.computer,
       you: word,
+    }
+    if (currentAnswer.you === '') {
+      this.setState({
+        error: "You can't enter a blank word",
+      });
+      return;
     }
     if (this.state.usedWords.includes(currentAnswer.you.toLowerCase())) {
       this.setState({
