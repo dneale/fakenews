@@ -104,8 +104,31 @@ class App extends Component {
       });
       return;
     }
+    try {
+      global.ga('send', {
+        hitType: 'event',
+        eventCategory: 'Game',
+        eventAction: 'submit',
+        eventLabel: 'attempt'
+      });
+    } catch (e) {
+      console.log('event failed to send');
+    }
+
+    
 
     if (currentAnswer.computer.toLowerCase() === currentAnswer.you.toLowerCase()) {
+      try {
+        global.ga('send', {
+          hitType: 'event',
+          eventCategory: 'Game',
+          eventAction: 'submit',
+          eventLabel: 'convergence',
+          eventValue: this.state.counter,
+        });
+      } catch (e) {
+        console.log('event failed to send');
+      }
       this.setState({
         convergence: true,
       });
