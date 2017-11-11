@@ -19,7 +19,7 @@ const GameHeader = styled.div`
       background-color: white;
       z-index: 99;
       position: relative;
-      top: -12px;  
+      top: -16px;  
       padding: 0 1em; 
       margin-right: 1em;   
     }
@@ -43,7 +43,7 @@ const defaultState = {
   prevQuestion: null,
   prevAnswer: null,
   currentAnswer: {
-    computer: faker.random.word(),
+    computer: faker.random.word().split(' ')[0].toLowerCase(),
     you: "",
   },
   usedWords: [],
@@ -150,7 +150,7 @@ class App extends Component {
       counter: this.state.counter + 1,
     });
 
-    fetch(`https://api.datamuse.com/words?ml=${currentAnswer.computer}+${currentAnswer.you}`, {
+    fetch(`https://q42u233iil.execute-api.ap-southeast-2.amazonaws.com/prod/play/${currentAnswer.computer}/${currentAnswer.you}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -158,7 +158,7 @@ class App extends Component {
     })
       .then((response) => response.json())
       .then(json => {
-        const topWord = this.getWord(json);
+        const topWord = this.getWord(json.words);
         this.setState({
           currentAnswer: {
             ...this.state.currentAnswer,
@@ -172,9 +172,6 @@ class App extends Component {
     let unusedWords = wordList.filter((wordObj) => {
       const word = wordObj.word;
       if (this.state.usedWords.includes(word.toLowerCase())) {
-        return false;
-      }
-      if (!wordObj.tags || !wordObj.tags.includes('n') || wordObj.tags.includes('prop') || word.includes(' ')) {
         return false;
       }
       return true;
