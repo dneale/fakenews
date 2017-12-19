@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Grid } from 'semantic-ui-react';
+import { Route } from 'react-router';
 
 
 import './App.css';
@@ -36,6 +37,10 @@ const Header = styled.div`
   margin-bottom: 0;
 `;
 
+const Article = (props) => (
+  <p>{props.match.params.id}</p>
+);
+
 
 class App extends Component {
   render() {
@@ -53,7 +58,7 @@ class App extends Component {
         <Grid padded className={this.props.className}>
           <Grid.Row centered>
             <Grid.Column mobile={16} tablet={10} computer={10} largeScreen={6}>
-              Content can go here
+              <Route path='/:id' component={Article} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
