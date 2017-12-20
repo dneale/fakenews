@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Grid } from 'semantic-ui-react';
 import { Route } from 'react-router';
+import qs from 'qs';
+import DocumentMeta from 'react-document-meta';
 
 
 import './App.css';
@@ -37,9 +39,34 @@ const Header = styled.div`
   margin-bottom: 0;
 `;
 
-const Article = (props) => (
-  <p>{props.match.params.id}</p>
+const getQueryStrings = string => (
+  qs.parse(string)
 );
+const Article = (props) => {
+  var strings = getQueryStrings(props.location.search);
+  console.log(strings);
+  const meta = {
+    title: strings.title,
+    meta: {
+      "og:url": strings.referer,
+      "og:type": "article",
+      "og:title": strings.title,
+      "og:description": strings.desc,
+      "og:image": strings.image,
+    }
+  };
+  return (
+    <div>
+      <div>
+        <p>title: {strings.title}</p>
+        <p>image: {strings.image}</p>
+        <p>referer: {strings.referer}</p>
+        <p> description: {strings.desc} </p>
+      </div>
+      <DocumentMeta {...meta} />
+    </div>
+  );
+};
 
 
 class App extends Component {
@@ -47,7 +74,7 @@ class App extends Component {
     return (
       <div>
         <Header>
-          <h1> Default Template</h1>
+          <h1> Create your own news article</h1>
           <p> 
             <hr />
             <span>
@@ -58,7 +85,7 @@ class App extends Component {
         <Grid padded className={this.props.className}>
           <Grid.Row centered>
             <Grid.Column mobile={16} tablet={10} computer={10} largeScreen={6}>
-              <Route path='/:id' component={Article} />
+              <Route path='/' component={Article} />
             </Grid.Column>
           </Grid.Row>
         </Grid>

@@ -6,7 +6,9 @@
     "react-scripts": "0.9.5"
   },
   "dependencies": {
+    "qs": "^6.5.1",
     "react": "^15.4.2",
+    "react-document-meta": "^2.1.2",
     "react-dom": "^15.4.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
